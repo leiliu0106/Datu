@@ -8,8 +8,11 @@ Jill Stein and Gary Johnson are more similar than Hillary Clinton and Donald
 Trump.
 
 How is this approach misleading? How might you fix it?
+
 Jill Stein has about 1650 friends, Gary Johnson has almost 3500 friends. However, Clinton has 762 friends and Trump has only 45 friends.
-The numbers of friends of former two people are much higher than those of Clinton and Trump
+The numbers of friends of former two people are much higher than those of Clinton and Trump. The possibility of sharing same friends is positively related to the friend number base. It is much more likely to have more common friends for Jill and Stein. 
+
+Using sub-sampling, we cannot use the all friends of Jill and Gary to create the sample. We can use pick up some of those two's friends randomly to create the sample, like 800 friends for Jill, 50 friends for Gray. Or we can standardize the result: to check the proportion of common friends to total friends: for Jill and Gary, 344/(1648+3478) = 6.71%  1/(762+45) =1.24%. The gap between those two number is not as big as the one created by absolute value.
 
 
 
@@ -25,7 +28,7 @@ do you think this user is followed by both Hilary Clinton and Donald Trump,
 who are rivals? Do some web searches to see if you can find out more
 information.
 
-
+Both of them are following 'WitheHouse', since they were running for presidency at that time.
 
 
 
@@ -40,6 +43,10 @@ information.
 3. There is a big difference in how many accounts each candidate follows (Gary
 Johnson follows over 3K accounts, while Donald Trump follows less than
 50). Why do you think this is? How might that affect our analysis?
+
+Trump is a much stronger candidate than Johnson, he is much busier than Johnson, so he does not have too much time to follow too many people.
+Since the number of Trump's friends is too small, which might provide less information for us. We only get a smaller sample to make analysis. 
+
 
 
 
@@ -57,3 +64,5 @@ https://dev.twitter.com/rest/reference/get/friends/ids, how many requests will
 we have to make? Given how Twitter does rate limiting
 (https://dev.twitter.com/rest/public/rate-limiting), approximately how many
 minutes will it take to collect this data?
+
+Trump has 45 friends, there can be a request in 15 mins for 15 people, the fisrt two bathces cost 30mins, the last bath cost less than 15mins, so the it costs the mininutes between 30 to 45.
