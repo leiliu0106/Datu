@@ -302,7 +302,13 @@ def draw_network(graph, users, filename):
     Your figure does not have to look exactly the same as mine, but try to
     make it look presentable.
     """
-    ###TODO
+    labeldict = {}
+    for i in users:
+        labeldict[i['screen_name']] = i['name']
+    
+    nx.draw(graph,labels=labeldict, with_labels = True)
+    plt.show()
+    plt.savefig(filename)
     pass
 
 
@@ -329,8 +335,8 @@ def main():
     print('network drawn to network.png')
 
 
-#if __name__ == '__main__':
-main()
+if __name__ == '__main__':
+    main()
 
 # That's it for now! This should give you an introduction to some of the data we'll study in this course.
 
