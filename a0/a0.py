@@ -282,7 +282,7 @@ def create_graph(users, friend_counts):
     Returns:
       A networkx Graph
     """
-    def create_graph(users, friend_counts):
+    
     graph = nx.DiGraph()
     for user in users:
         for id in user['friends']:
