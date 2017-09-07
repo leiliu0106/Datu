@@ -282,7 +282,13 @@ def create_graph(users, friend_counts):
     Returns:
       A networkx Graph
     """
-    ###TODO
+    def create_graph(users, friend_counts):
+    graph = nx.DiGraph()
+    for user in users:
+        for id in user['friends']:
+            if friend_counts[id] > 1:
+                graph.add_edge(id, user['screen_name'])
+    return graph
     pass
 
 
