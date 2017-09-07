@@ -37,10 +37,10 @@ import sys
 import time
 from TwitterAPI import TwitterAPI
 
-consumer_key = 'fixme'
-consumer_secret = 'fixme'
-access_token = 'fixme'
-access_token_secret = 'fixme'
+consumer_key = 'uzwazJyR1BS3bJFd41jU8We5n'
+consumer_secret = 'hC0GRtw9wOnZtDMq1DcghxtSSRUVda7WJhO0RTQN9iWHv9mox1'
+access_token = '769992044269936641-NBiMKReF0KL7M81V9AxJkhJHDDEMnMG'
+access_token_secret = 'n18dd6cGogwvK3lgjkeg4ZBXWWGqFL5LPn1YrbKvDlEMR'
 
 
 # This method is done for you.
@@ -66,7 +66,11 @@ def read_screen_names(filename):
     >>> read_screen_names('candidates.txt')
     ['DrJillStein', 'GovGaryJohnson', 'HillaryClinton', 'realDonaldTrump']
     """
-    ###TODO
+    f = open(filename)
+    content = f.readlines()
+    content = [x.strip() for x in content]
+    f.close()
+    return content
     pass
 
 
@@ -112,7 +116,9 @@ def get_users(twitter, screen_names):
     >>> [u['id'] for u in users]
     [6253282, 783214]
     """
-    ###TODO
+    request = robust_request(twitter,'users/lookup',{'screen_name' : ','.join(screen_names)})
+    users = [r for r in request]
+    return users
     pass
 
 
@@ -137,7 +143,9 @@ def get_friends(twitter, screen_name):
     >>> get_friends(twitter, 'aronwc')[:5]
     [695023, 1697081, 8381682, 10204352, 11669522]
     """
-    ###TODO
+    request = robust_request(twitter,'friends/ids', {'screen_name':screen_name})
+    friends = [r for r in request]
+    return sorted(friends)
     pass
 
 
@@ -159,7 +167,9 @@ def add_all_friends(twitter, users):
     >>> users[0]['friends'][:5]
     [695023, 1697081, 8381682, 10204352, 11669522]
     """
-    ###TODO
+    for user in users:
+        friends = get_friends(twitter, user['screen_name'])
+        user['friends'] = friends
     pass
 
 
@@ -171,7 +181,8 @@ def print_num_friends(users):
     Returns:
         Nothing
     """
-    ###TODO
+    for user in users:
+        print(user['screen_name'], len(user['friends']))
     pass
 
 
@@ -188,7 +199,10 @@ def count_friends(users):
     >>> c.most_common()
     [(2, 3), (3, 2), (1, 1)]
     """
-    ###TODO
+    c = Counter()
+    for user in users:
+        c.update(user['friends'])
+    return c
     pass
 
 
@@ -213,7 +227,14 @@ def friend_overlap(users):
     ...     ])
     [('a', 'c', 3), ('a', 'b', 2), ('b', 'c', 2)]
     """
-    ###TODO
+   
+    l = []
+    for i in range(0,len(users)-1):
+        for j in range(i + 1,len(users)):
+            s = set(users[i]['friends']) & set(users[j]['friends'])
+            t = (users[i]['screen_name'],users[j]['screen_name'],len(s))
+            l.append(t)
+    return l
     pass
 
 
@@ -231,7 +252,18 @@ def followed_by_hillary_and_donald(users, twitter):
         A string containing the single Twitter screen_name of the user
         that is followed by both Hillary Clinton and Donald Trump.
     """
-    ###TODO
+#def followed_by_hillary_and_donald(users, twitter):
+    for user in users:
+        if user['screen_name'] == 'HillaryClinton':
+            a1 = user
+        if user['screen_name'] == 'realDonaldTrump':
+            a2 = user
+        
+    s = set(a1['friends']) & set(a2['friends'])
+    user_id = list(s)
+        
+    followed_friend = robust_request(twitter,'users/lookup',{'user_id' : user_id})
+    return [f for f in followed_friend][0]['screen_name']
     pass
 
 
@@ -291,7 +323,8 @@ def main():
     print('network drawn to network.png')
 
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+main()
 
 # That's it for now! This should give you an introduction to some of the data we'll study in this course.
+
