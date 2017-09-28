@@ -525,10 +525,9 @@ def evaluate(predicted_edges, graph):
     ###TODO
     n = 0
     for edge in predicted_edges:
-        if edge in graph.edges():
+        if graph.has_edge(*edge):
             n += 1
-            p = n/len(predicted_edges)
-    return p
+    return n/len(predicted_edges) 
             
 
 
