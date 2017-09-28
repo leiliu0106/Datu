@@ -81,8 +81,9 @@ def bfs(graph, root, max_depth):
     node2distances =  defaultdict(int)
     node2num_paths = defaultdict(int)
     node2parents = defaultdict(list)
+    node2num_paths[root] = 1
     level = 0
-    while len(q)>0 and level < max_depth:
+    while len(q)>0:
         n, level = q.popleft()
         if level >= max_depth:
             break
@@ -190,7 +191,7 @@ def approximate_betweenness(graph, max_depth):
     ###TODO
     betweeness_dict = defaultdict(lambda: 0.0)
     for node in graph.nodes():
-        node2distances, node2num_paths, node2parents = bfs(example_graph(), node, max_depth)
+        node2distances, node2num_paths, node2parents = bfs(graph, node, max_depth)
         result = bottom_up(node, node2distances, node2num_paths, node2parents)
         for edge,credit in result.items():
                 betweeness_dict[edge] += credit/2
@@ -323,9 +324,11 @@ def cut(S, T, graph):
     1
     """
     ###TODO
+    n = 0
     for s in S:
         for t in T:
-            n = nx.edge_connectivity(graph,s,t)
+            if graph.has_edge(s,t):
+                n += 1
     return n
 
 
@@ -368,7 +371,7 @@ def score_max_depths(graph, max_depths):
     depth_score = []
     for i in max_depths:
         components = partition_girvan_newman(graph, i)
-        score = norm_cut(components[0].nodes(),components[1].nodes,graph)
+        score = norm_cut(components[0].nodes(),components[1].nodes(),graph)
         depth_score.append((i,score))
     return depth_score
 
@@ -520,7 +523,13 @@ def evaluate(predicted_edges, graph):
     0.5
     """
     ###TODO
-    pass
+    n = 0
+    for edge in predicted_edges:
+        if edge in graph.edges():
+            n += 1
+            p = n/len(predicted_edges)
+    return p
+            
 
 
 """
@@ -528,7 +537,7 @@ Next, we'll download a real dataset to see how our algorithm performs.
 """
 def download_data():
     """
-    Download the data. Done for you.
+    Download the data. Done for you._
     """
     urllib.request.urlretrieve('http://cs.iit.edu/~culotta/cs579/a1/edges.txt.gz', 'edges.txt.gz')
 
@@ -557,7 +566,7 @@ def main():
     print(score_max_depths(subgraph, range(1,5)))
     clusters = partition_girvan_newman(subgraph, 3)
     print('first partition: cluster 1 has %d nodes and cluster 2 has %d nodes' %
-          (clusters[0].order(), clusters[1].order()))
+         (clusters[0].order(), clusters[1].order()))
     print('cluster 2 nodes:')
     print(clusters[1].nodes())
 
@@ -573,11 +582,11 @@ def main():
     print('jaccard accuracy=%g' %
           evaluate([x[0] for x in jaccard_scores], subgraph))
 
-    path_scores = path_score(train_graph, test_node, k=5, beta=.1)
+    #path_scores = path_score(train_graph, test_node, k=5, beta=.1)
     print('\ntop path scores for Bill Gates for beta=.1:')
-    print(path_scores)
-    print('path accuracy for beta .1=%g' %
-          evaluate([x[0] for x in path_scores], subgraph))
+    #print(path_scores)
+    #print('path accuracy for beta .1=%g' %
+          #evaluate([x[0] for x in path_scores], subgraph))
 
 
 if __name__ == '__main__':
