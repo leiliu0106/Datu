@@ -81,7 +81,7 @@ def featurize(movies):
       - The movies DataFrame, which has been modified to include a column named 'features'.
       - The vocab, a dict from term to int. Make sure the vocab is sorted alphabetically as in a2 (e.g., {'aardvark': 0, 'boy': 1, ...})
     """
-def featurize(movies):
+
     list = []
     dic = defaultdict(lambda :0)
     print(movies['tokens'])
