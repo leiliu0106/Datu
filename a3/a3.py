@@ -51,7 +51,11 @@ def tokenize(movies):
     >>> movies['tokens'].tolist()
     [['horror', 'romance'], ['sci-fi']]
     """
-    ###TODO
+    lst = []
+    for t in movies['genres']:
+        lst.append(tokenize_string(t))
+    movies['tokens'] = pd.Series(lst, index=movies.index)
+    return movies
     pass
 
 
@@ -77,7 +81,40 @@ def featurize(movies):
       - The movies DataFrame, which has been modified to include a column named 'features'.
       - The vocab, a dict from term to int. Make sure the vocab is sorted alphabetically as in a2 (e.g., {'aardvark': 0, 'boy': 1, ...})
     """
-    ###TODO
+def featurize(movies):
+    list = []
+    dic = defaultdict(lambda :0)
+    print(movies['tokens'])
+    for tokens in movies['tokens']:
+        for token in set(tokens):
+            dic[token] += 1
+        
+    list = [v for v in dic]
+    list.sort()
+        
+    vocab_dic = {}
+    for i, v in enumerate(list):
+        vocab_dic[v] = i
+
+    indptr = [0]
+    indices, data = [],[]
+    lst2 = []
+    for tokens in movies['tokens']:
+        freq = Counter(tokens)
+        max_k = freq.most_common()[0][1]
+        for token in freq:
+            #if token in vocab_dic:
+            index = vocab_dic[token]
+            indices.append(index)
+            tfidf = freq[token] / max_k * math.log10(movies.shape[0] /dic[token])
+            data.append(tfidf)
+
+        csr = csr_matrix((data, indices, [0, len(freq)]), shape = (1, len(vocab_dic)),dtype=np.float64)
+        lst2.append(csr)
+        
+    movies['features'] = pd.Series(lst2, index=movies.index)
+        
+    return movies, vocab_dic
     pass
 
 
@@ -102,7 +139,10 @@ def cosine_sim(a, b):
       The cosine similarity, defined as: dot(a, b) / ||a|| * ||b||
       where ||a|| indicates the Euclidean norm (aka L2 norm) of vector a.
     """
-    ###TODO
+    a = a.toarray()[0]
+    b = b.toarray()[0]
+    cos = np.dot(a,b)/(np.sqrt(a.dot(a))*np.sqrt(b.dot(b)))
+    return cos
     pass
 
 
@@ -128,7 +168,35 @@ def make_predictions(movies, ratings_train, ratings_test):
     Returns:
       A numpy array containing one predicted rating for each element of ratings_test.
     """
-    ###TODO
+    train_dict = {}
+    train = ratings_train.groupby('userId')
+    
+    for k,v in train:
+        train_dict[k] = v
+
+    lst = []
+    for index,row in ratings_test.iterrows():
+        train_rating = train_dict[row['userId']]
+        movie_feature = movies.loc[movies["movieId"] == row["movieId"],"features"].iloc[0]
+        u,v,count,weight = 0.0, 0.0, 0.0, 0.0
+        for t,vvv in train_rating.iterrows():
+            vector = movies.loc[movies["movieId"] == vvv['movieId'],"features"].iloc[0]
+            cos = cosine_sim(movie_feature,vector)
+            
+            if cos > 0:
+                u += cos * vvv['rating']
+                v += cos
+                count +=1
+                
+        if(count >0):
+            weight = u / v
+            
+        else:
+            weight = np.mean(train_rating["rating"])
+        
+        lst.append(weight)
+        
+    return np.array(lst, dtype=np.float64)
     pass
 
 
