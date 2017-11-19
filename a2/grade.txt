@@ -1,0 +1,164 @@
+Grade: 30.00/50.00
+
+4 Deduction(s):
+
+--------------
+#1: 5.00 points
+Failing test: test_featurize: 
+        @points=5
+        
+Traceback (most recent call last):
+  File "../assignments-sol/a2/a2_test.py", line 76, in test_featurize
+    [('neg_words', 0), ('pos_words', 2), ('token=LOVE', 1), ('token=great', 1), ('token=i', 1), ('token=movie', 1), ('token=this', 1)])
+AssertionError: Lists differ: [('ne[23 chars]ds', 1), ('token=LOVE', 1), ('token=great', 1)[51 chars], 1)] != [('ne[23 chars]ds', 2), ('token=LOVE', 1), ('token=great', 1)[51 chars], 1)]
+
+First differing element 1:
+('pos_words', 1)
+('pos_words', 2)
+
+  [('neg_words', 0),
+-  ('pos_words', 1),
+?                ^
+
++  ('pos_words', 2),
+?                ^
+
+   ('token=LOVE', 1),
+   ('token=great', 1),
+   ('token=i', 1),
+   ('token=movie', 1),
+   ('token=this', 1)]
+
+source:
+    def test_featurize(self):
+         """
+         @points=5
+         """
+         feats = featurize(np.array(['i', 'LOVE', 'this', 'great', 'movie']), [token_features, lexicon_features])
+         self.assertListEqual(feats,
+                              [('neg_words', 0), ('pos_words', 2), ('token=LOVE', 1), ('token=great', 1), ('token=i', 1), ('token=movie', 1), ('token=this', 1)])
+--------------
+
+--------------
+#2: 5.00 points
+Failing test: test_lexicon_features: 
+        @points=5
+        
+Traceback (most recent call last):
+  File "../assignments-sol/a2/a2_test.py", line 67, in test_lexicon_features
+    [('neg_words', 1), ('pos_words', 2)])
+AssertionError: Lists differ: [('neg_words', 1), ('pos_words', 1)] != [('neg_words', 1), ('pos_words', 2)]
+
+First differing element 1:
+('pos_words', 1)
+('pos_words', 2)
+
+- [('neg_words', 1), ('pos_words', 1)]
+?                                  ^
+
++ [('neg_words', 1), ('pos_words', 2)]
+?                                  ^
+
+
+source:
+    def test_lexicon_features(self):
+         """
+         @points=5
+         """
+         feats = defaultdict(lambda: 0)
+         lexicon_features(np.array(['i', 'LOVE', 'this', 'great', 'boring', 'movie']), feats)
+         self.assertListEqual(sorted(feats.items()),
+                              [('neg_words', 1), ('pos_words', 2)])
+--------------
+
+--------------
+#3: 5.00 points
+Failing test: test_token_pair_features: 
+        @points=5
+        
+Traceback (most recent call last):
+  File "../assignments-sol/a2/a2_test.py", line 49, in test_token_pair_features
+    [('token_pair=a__b', 1), ('token_pair=a__c', 1), ('token_pair=b__c', 2), ('token_pair=b__d', 1), ('token_pair=c__d', 1)])
+AssertionError: Lists differ: [('token=a__b', 1), ('token=a__c', 1), ('token=b_[41 chars], 1)] != [('token_pair=a__b', 1), ('token_pair=a__c', 1), [66 chars], 1)]
+
+First differing element 0:
+('token=a__b', 1)
+('token_pair=a__b', 1)
+
+- [('token=a__b', 1),
++ [('token_pair=a__b', 1),
+?         +++++
+
+-  ('token=a__c', 1),
++  ('token_pair=a__c', 1),
+?         +++++
+
+-  ('token=b__c', 2),
++  ('token_pair=b__c', 2),
+?         +++++
+
+-  ('token=b__d', 1),
++  ('token_pair=b__d', 1),
+?         +++++
+
+-  ('token=c__d', 1)]
++  ('token_pair=c__d', 1)]
+?         +++++
+
+
+source:
+    def test_token_pair_features(self):
+         """
+         @points=5
+         """
+         feats = defaultdict(lambda: 0)
+         token_pair_features(np.array(['a', 'b', 'c', 'd']), feats)
+         ret = sorted(feats.items())
+         # switch x_y to x__y if necessary.
+         ret = [(re.sub(r'=([a-z]+)_([a-z]+)', r'=\1__\2', r), v) for r, v in ret]
+         self.assertListEqual(ret,
+                              [('token_pair=a__b', 1), ('token_pair=a__c', 1), ('token_pair=b__c', 2), ('token_pair=b__d', 1), ('token_pair=c__d', 1)])
+ 
+         feats = defaultdict(lambda: 0)
+         token_pair_features(np.array(['a', 'b', 'c', 'd', 'e']), feats, k=4)
+         ret = sorted(feats.items())
+         # switch x_y to x__y if necessary.
+         ret = [(re.sub(r'=([a-z]+)_([a-z]+)', r'=\1__\2', r), v) for r, v in ret]
+         self.assertListEqual(ret,
+                              [('token_pair=a__b', 1), ('token_pair=a__c', 1), ('token_pair=a__d', 1), ('token_pair=b__c', 2), ('token_pair=b__d', 2), ('token_pair=b__e', 1), ('token_pair=c__d', 2), ('token_pair=c__e', 1), ('token_pair=d__e', 1)])
+--------------
+
+--------------
+#4: 5.00 points
+Failing test: test_vectorize_2: 
+        @points=5
+        
+Traceback (most recent call last):
+  File "../assignments-sol/a2/a2_test.py", line 102, in test_vectorize_2
+    [1])
+AssertionError: Lists differ: [1, 1, 1, 1, 1, 0] != [1]
+
+First list contains 5 additional elements.
+First extra element 1:
+1
+
+- [1, 1, 1, 1, 1, 0]
++ [1]
+
+source:
+    def test_vectorize_2(self):
+         """
+         @points=5
+         """
+         docs = ["Isn't this movie great?", "Horrible, horrible movie"]
+         tokens_list = [tokenize(d) for d in docs]
+         feature_fns = [token_features]
+         X, vocab = vectorize(tokens_list, feature_fns, min_freq=2)
+         self.assertListEqual(list(X.toarray()[0]),
+                              [1])
+         self.assertListEqual(list(X.toarray()[1]),
+                              [1])
+         self.assertListEqual(sorted(vocab.items(), key=lambda x: x[1]),
+                              [('token=movie', 0)])
+--------------
+
