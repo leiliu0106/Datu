@@ -1,0 +1,10 @@
+I choose six tweet users:CP3,ThomasDavisSDTM,KrisBryant_23,shawz15er,FloydMayweather,McIlroyRory, who are athletes in different fields.
+In the collect file: I get those six users by their screen name and their frineds, for their tweets, I choose 100 tweets for each user.
+In the cluster file, I use each users' friends to create a graph which has 189 nodes and 409 edges. Then I use girvan_newman (import from networkx) to detect the communities.
+The result shows that there are three communities:ThomasDavisSDTM,CP3,McIlroyRory,FloydMayweather belongs to the largest community with 161
+people; shawz15er longs to a community with 8 people,KrisBryant_23 belongs to the community with 23 people.
+In the class file, I use afinn dictionary to make sentiment analysi, which can classify each user' each tweet to be classified into positive, negative and neutral class.
+I tokenize each user's tweet to check each word' score in the dictionary, then get each tweet's total score, if the score is higher than 0, it is classified as positive class;
+if low than 0, it is classified to negative class; if equals to 0, it is classified to neutral class. The result show that most of tweets are neutral. The reason might be 
+lots of tweets words are not concluded in the dictionary. 
+In the summarize file, I summarize all the results about number of communities discovered, the number of instances per class,etc.
