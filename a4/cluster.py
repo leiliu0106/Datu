@@ -87,6 +87,7 @@ def main():
     print('Actual number of users per community:',[len(sub) for sub in subs])
     
     print('Save the communities.')
+    pickle.dump(subs, open('graph.pickle', 'wb'))
     pickle.dump(subs, open('subs.pickle', 'wb'))
     
 
