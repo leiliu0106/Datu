@@ -1,7 +1,7 @@
 # coding: utf-8
 
 """
-CS579: Assignment 0
+
 Collecting a political social network
 
 In this assignment, I've given you a list of Twitter accounts of 4
